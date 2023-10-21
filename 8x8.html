@@ -27,6 +27,9 @@
 		.OFF {
 			background-color: black;
 		}
+		.ON {
+			background-color: rgba(0, 176, 47, 0.858);
+		}
 	</style>
 </head>
 
@@ -51,6 +54,9 @@
 				this.colArray.forEach((m) => html += m.generaVista());
 				return `<div Class="MATRIX">${html}</div>`;
 			}
+			refrescarEstado(arr){
+				this.colArray.forEach((mc,ix) => mc.refrescarEstado(arr[ix]));
+			}
 		}
 
 		class MatrixCol {
@@ -65,12 +71,35 @@
 				}
 				return `<div>${html}</div>`;
 			}
+			refrescarEstado(arr){
+				//recibe arreglo binario de estados: 0,1
+				arr.forEach((e,ix) => {
+					const light = e=='1' ? 'ON':'OFF'
+					$(`#${ix}-${this.ix}`).removeClass('ON');
+					$(`#${ix}-${this.ix}`).removeClass('OFF');
+					$(`#${ix}-${this.ix}`).addClass(light);
+				});
+			}
 
 		}
+	
+		
+		m = new Matrix(1);
+		$('body').append(m.generaVista());
+		const letra=[
+		 [0,1,0,1,1,1,1,1]
+		,[1,0,0,0,0,0,0,0]
+		,[1,1,0,0,0,0,0,0]
+		,[0,0,1,0,0,1,0,0]
+		,[0,0,0,1,1,0,0,0]
+		,[0,0,0,0,0,1,0,0]
+		,[0,0,0,0,0,0,1,1]
+		,[0,0,0,0,0,0,1,1]
+		];
 
-		m = new Matrix(1)
-		$('body').append(m.generaVista())
+		m.refrescarEstado(letra)
 
+		
 	</script>
 
 </body>

@@ -6,104 +6,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Document</title>
 	<script src="jquery-3.7.1.min.js"></script>
+	<link rel="stylesheet" href="8x8.css">
 
-	<style>
-		.MATRIX {
-			display: flex;
-		}
-
-		.MATRIX>div {
-			display: flex;
-			flex-direction:column;
-		}
-
-		.MATRIX>div>div {
-			flex:1 1 auto;
-			height: 20px;
-			width: 20px;
-			border: 1px solid gray;
-		}
-
-		.OFF {
-			background-color: black;
-		}
-		.ON {
-			background-color: rgba(0, 176, 47, 0.858);
-		}
-	</style>
 </head>
 
 <body>
 	<input id="binario">0x00, 0x00, 0x5F, 0x00, 0x00</input>
 	<button onclick="">DoMatrix</button>
-
-	<script>
-
-		class Matrix {
-			constructor(ix) {
-				this.ix = ix;
-				this.colArray = [];
-				for (let i = 0; i < 8; i++) {
-					let m = new MatrixCol(i);
-					this.colArray.push(m);
-				}
-			}
-			generaVista() {
-				const ix = this.ix;
-				let html = '';
-				this.colArray.forEach((m) => html += m.generaVista());
-				return `<div Class="MATRIX">${html}</div>`;
-			}
-			refrescarEstado(arr){
-				this.colArray.forEach((mc,ix) => mc.refrescarEstado(arr[ix]));
-			}
-		}
-
-		class MatrixCol {
-			constructor(ix) {
-				this.ix = ix;
-			}
-			generaVista() {
-				const ix = this.ix;
-				let html = '';
-				for (let i = 0; i < 8; i++) {
-					html += `<div id="${i}-${ix}" class="OFF"></div>`;
-				}
-				return `<div>${html}</div>`;
-			}
-			refrescarEstado(arr){
-				//recibe arreglo binario de estados: 0,1
-				arr.forEach((e,ix) => {
-					const light = e=='1' ? 'ON':'OFF'
-					$(`#${ix}-${this.ix}`).removeClass('ON');
-					$(`#${ix}-${this.ix}`).removeClass('OFF');
-					$(`#${ix}-${this.ix}`).addClass(light);
-				});
-			}
-
-		}
-		function hex2bin(hex){
-    		return [...(parseInt(hex, 16).toString(2)).padStart(8, '0')].reverse();
-		}
-			
-		m = new Matrix(1);
-		$('body').append(m.generaVista());
-		const letra=[
-		hex2bin('00')
-		,hex2bin('00')
-		,hex2bin('5f')
-		,hex2bin('00')
-		,hex2bin('00')
-		,hex2bin('00')
-		,hex2bin('00')
-		,hex2bin('00')
-		];
-
-		m.refrescarEstado(letra)
-
-		
-	</script>
-
+	<script src="8x8.js"></script>
 </body>
 
 

@@ -1,0 +1,22 @@
+.MATRIX {
+    display: flex;
+}
+
+.MATRIX>div {
+    display: flex;
+    flex-direction:column;
+}
+
+.MATRIX>div>div {
+    flex:1 1 auto;
+    height: 20px;
+    width: 20px;
+    border: 1px solid gray;
+}
+
+.OFF {
+    background-color: black;
+}
+.ON {
+    background-color: rgba(0, 176, 47, 0.858);
+}

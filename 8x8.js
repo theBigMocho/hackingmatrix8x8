@@ -61,7 +61,14 @@ const letra = [
 m.refrescarEstado(letra)
 
 function DoMatrix(){
-    let codigoLetra = $('#binario').val().trim().replaceAll('0x','').replaceAll(', ','');
+    let codigoLetra = fmtCodigoLetra($('#binario').val())
+   
+    codigoLetrasAMatriz(codigoLetra);
+}
+function fmtCodigoLetra(cl){
+    return cl.trim().replaceAll('0x','').replaceAll(', ','')+ '000000'
+}
+function codigoLetrasAMatriz(codigoLetra){
     codigoLetra = codigoLetra + '000000';
     const letra =[];
     for(let i = 0;i<codigoLetra.length-1;i++){
@@ -70,3 +77,8 @@ function DoMatrix(){
     }
     m.refrescarEstado(letra);
 }
+
+const arrLetras=[
+    '0x1C, 0x5E, 0x7F, 0x5E, 0x1C,',
+]
+codigoLetrasAMatriz(fmtCodigoLetra(arrLetras[0]))

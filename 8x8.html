@@ -82,19 +82,21 @@
 			}
 
 		}
-	
-		
+		function hex2bin(hex){
+    		return [...(parseInt(hex, 16).toString(2)).padStart(8, '0')].reverse();
+		}
+			
 		m = new Matrix(1);
 		$('body').append(m.generaVista());
 		const letra=[
-		 [0,1,0,1,1,1,1,1]
-		,[1,0,0,0,0,0,0,0]
-		,[1,1,0,0,0,0,0,0]
-		,[0,0,1,0,0,1,0,0]
-		,[0,0,0,1,1,0,0,0]
-		,[0,0,0,0,0,1,0,0]
-		,[0,0,0,0,0,0,1,1]
-		,[0,0,0,0,0,0,1,1]
+		hex2bin('00')
+		,hex2bin('00')
+		,hex2bin('5f')
+		,hex2bin('00')
+		,hex2bin('00')
+		,hex2bin('00')
+		,hex2bin('00')
+		,hex2bin('00')
 		];
 
 		m.refrescarEstado(letra)

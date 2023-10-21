@@ -1,5 +1,6 @@
 .MATRIX {
     display: flex;
+    width: fit-content;
 }
 
 .MATRIX>div {

@@ -46,7 +46,7 @@ function hex2bin(hex) {
 }
 
 m = new Matrix(1);
-$('body').append(m.generaVista());
+$('#matrixContainer').append(m.generaVista());
 const letra = [
     hex2bin('00')
     , hex2bin('00')
@@ -82,3 +82,9 @@ const arrLetras=[
     '0x1C, 0x5E, 0x7F, 0x5E, 0x1C,',
 ]
 codigoLetrasAMatriz(fmtCodigoLetra(arrLetras[0]))
+
+$('li').on("click",function(){
+    const e = $(this);
+    $('#binario').val(e.text());
+    codigoLetrasAMatriz(fmtCodigoLetra(e.text()))
+})

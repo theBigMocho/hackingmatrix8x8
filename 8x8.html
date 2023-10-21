@@ -1,159 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script src="jquery-3.7.1.min.js"></script>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+	<script src="jquery-3.7.1.min.js"></script>
 
-    <style>
-        #bincontainer{
-            position: absolute;
-    top: 74px;
-    transform: rotate(270deg);
-            height: fit-content;
-    width: fit-content;
-        }
-        .uno{
-            float: left;
-background-color:red;
-height: 20px;
-width: 20px;
-        }
-        .cero{
-            float: left;
-background-color:black;
-height: 20px;
-width: 20px;
-        }
+	<style>
+		.MATRIX {
+			height: fit-content;
+			width: fit-content;
+		}
 
-.MATRIX{
-    height:fit-content;
-    width:fit-content;
-}
-.MATRIX>div{
-    height:fit-content;
-    width:fit-content;
-}
-.MATRIX>div>div{
-    height:20px;
-    width:20px;
-    border:1px solid gray;
-}
-.OFF{
-    background-color: black;
-}
-    </style>
+		.MATRIX>div {
+			height: fit-content;
+			width: fit-content;
+		}
+
+		.MATRIX>div>div {
+			height: 20px;
+			width: 20px;
+			border: 1px solid gray;
+		}
+
+		.OFF {
+			background-color: black;
+		}
+	</style>
 </head>
+
 <body>
-    <input id="binario">0x00, 0x00, 0x5F, 0x00, 0x00</input>
-    <button onclick="DoMatrix()">DoMatrix</button>
+	<input id="binario">0x00, 0x00, 0x5F, 0x00, 0x00</input>
+	<button onclick="">DoMatrix</button>
 
-<script>
-function DoMatrix(){
-var binarioEx = $('#binario').val().trim().replaceAll('0x','').replaceAll(', ','');
-var binario = '';
+	<script>
 
-for (var i = 0 ;i<binarioEx.length-1;i++){
-    binario += hex2bin(binarioEx[i]+binarioEx[i+1]);
-    i++;
-}
-var items =0;
-var enVertical =[];
-for(var i = 0 ;i<binario.length;i++){
-    if (items==8){
-        items=0;
-    }
-    if(enVertical[items] == undefined){
-        enVertical[items] =[];
-    }
-    enVertical[items].push(binario[i]);
-    items++;
-}
+		class Matrix {
+			constructor(ix) {
+				this.ix = ix;
+				this.colArray = [];
+				for (let i = 0; i < 8; i++) {
+					let m = new MatrixCol(i);
+					this.colArray.push(m);
+				}
+			}
+			generaVista() {
+				const ix = this.ix;
+				let html = '';
+				this.colArray.forEach((m) => html += m.generaVista());
+				return `<div Class="MATRIX">${html}</div>`;
+			}
+		}
 
-var nuevoBinary = ''
-for(var i = 0; i< enVertical.length;i++){
+		class MatrixCol {
+			constructor(ix) {
+				this.ix = ix;
+			}
+			generaVista() {
+				const ix = this.ix;
+				let html = '';
+				for (let i = 0; i < 8; i++) {
+					html += `<div id="${i}-${ix}" class="OFF"></div>`;
+				}
+				return `<div>${html}</div>`;
+			}
 
-    for(var j = 0; j< enVertical[i].length;j++){
-        nuevoBinary += ''+enVertical[i][j];
+		}
 
-}
-}
-//binario=nuevoBinary;
-console.log(nuevoBinary);
+		m = new Matrix(1)
+		$('body').append(m.generaVista())
 
-items =0;
-
-var html = '<div id="bincontainer">';
-
-for(var i = 0 ;i<binario.length;i++){
-if(items == 0){
-html+='<div>';
-
-}
-html+=`<div class="${binario[i]=='1'? 'uno':'cero'}"></div>`;
-items ++;
-
-if(items == 8){
-    items=0
-html+='</div>'
-}
-};
-
-html+='</div>'
-console.log(binario);
-$('#bincontainer').remove();
-$('body').append(html);
-}
-function hex2bin(hex){
-    return (parseInt(hex, 16).toString(2)).padStart(8, '0');
-}
-
-
-function exStringToArray(exstring){
-//exstring: from input:  0x00, 0x00, 0x5F, 0x00, 0x00 --> 8 columns, 5 rows, 1 ex --> 1 col, 5 rows
-//binarioEx: '00005F0000'
-
-var binarioEx = $('#binario').val().trim().replaceAll('0x','').replaceAll(', ','');
-hex2bin(binarioEx[i]+binarioEx[i+1])
-
-}
-
-
-class Matrix{
-    constructor(ix) {
-        this.ix = ix;
-        this.colArray=[];
-        for(let i = 0 ; i < 8 ; i++){
-            let m = new MatrixCol(i);
-            this.colArray.push(m);
-            }
-        }
-    generaVista(){
-        const ix = this.ix;
-        let html='';
-        this.colArray.forEach((m) => html+= m.generaVista());
-        return `<div Class="MATRIX">${html}</div>`;
-    }    
-}
-
-class MatrixCol{
-    constructor(ix) {
-        this.ix = ix;
-        }
-    generaVista(){
-        const ix = this.ix;
-        let html ='';
-        for(let i = 0 ; i < 8 ; i++){
-            html += `<div id="${i}-${ix}" class="OFF"></div>`;
-        }
-        return `<div>${html}</div>`;
-    }
-
-}
-m = new Matrix(1)
-$('body').append(m.generaVista())
-</script>
+	</script>
 
 </body>
 

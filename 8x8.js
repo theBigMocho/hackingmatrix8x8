@@ -50,7 +50,7 @@ $('body').append(m.generaVista());
 const letra = [
     hex2bin('00')
     , hex2bin('00')
-    , hex2bin('5f')
+    , hex2bin('00')
     , hex2bin('00')
     , hex2bin('00')
     , hex2bin('00')
@@ -59,3 +59,14 @@ const letra = [
 ];
 
 m.refrescarEstado(letra)
+
+function DoMatrix(){
+    let codigoLetra = $('#binario').val().trim().replaceAll('0x','').replaceAll(', ','');
+    codigoLetra = codigoLetra + '000000';
+    const letra =[];
+    for(let i = 0;i<codigoLetra.length-1;i++){
+        letra.push(hex2bin(codigoLetra[i]+codigoLetra[i+1]))
+        i++;
+    }
+    m.refrescarEstado(letra);
+}

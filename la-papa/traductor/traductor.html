@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="datos-sitio.js"></script>
+    <script src="glcdfont.js"></script>
+    <style>
+        .pixel {
+            width: 15px;
+            height: 15px;
+            background-color: black;
+            border: 1px solid rgb(71, 0, 0);
+            border-radius: 5px;
+
+        }
+
+        .matriz,
+        .col {
+            float: right;
+            background-color: black;
+        }
+
+        .on {
+            background-color: red;
+            box-shadow: 0px 0px 10px 1px rgb(237, 129, 129);
+            z-index: 10;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="consola"></div>
+    <div id="Fila8x8"></div>
+
+    <!-- <div class="matriz">
+        <div class="col">
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+        </div>
+    </div> -->
+    <!-- <div class="matriz">
+        <div class="row">
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+            <div class="pixel"></div>
+        </div>
+    </div> -->
+
+</body>
+<script>
+
+
+    function agregaLineaConsola(linea) {
+        const html = `<div>${linea}</div>`;
+        $('#consola').prepend(html);
+    }
+    function crea8x8(matriz) {
+        let html = '<div class="matriz">';
+        for (let col = 0; col < 8; col++) {
+            html += `<div class="col">`;
+            for (let row = 0; row < 8; row++) {
+                html += `<div id="${matriz}-${7 - col}-${7 - row}" class="pixel"></div>`;
+            }
+            html += `</div>`;
+        }
+        html += `</div>`;
+        $('#Fila8x8').append(html);
+    }
+    function creaLineaMatrix() {
+        for (let i = 0; i < 5; i++) {
+            crea8x8(4 - i);
+        }
+    }
+    let c = 0;
+
+    creaLineaMatrix();
+
+
+    function letraToMatriz(letra) {
+        const index = letra.charCodeAt(0);
+        return fonts[index];
+    }
+    function filaMatrizArrBin(fila) {
+        let filaBin = fila.toString(2);
+        const falta = 8 - filaBin.length;
+        for (let i = 0; i < falta; i++) {
+            filaBin = '0' + filaBin;
+        }
+        return filaBin.split('');
+
+    };
+    function muestraLetraEnMatriz(matriz, letra) {
+        const ltm = letraToMatriz(letra)
+        for (let col = 0; col < 8; col++) {
+            filarray = filaMatrizArrBin(ltm[col]);
+            for (let row = 0; row < 8; row++) {
+                $(`#${matriz}-${col}-${row}`).removeClass('on')
+                if (filarray[row] == '1') {
+                    $(`#${matriz}-${col}-${row}`).addClass('on');
+                }
+            }
+        }
+    }
+
+    function muestraFilaMatriz(matriz, col, filarray) {
+        for (let row = 0; row < 8; row++) {
+            $(`#${matriz}-${col}-${row}`).removeClass('on')
+            if (filarray[row] == '1') {
+                $(`#${matriz}-${col}-${row}`).addClass('on');
+            }
+        }
+    }
+
+    function generaFilas(msg) {
+        const msg_txt = msg;
+        const msg_arr = msg_txt.split('');
+        const filasMatriz = [];
+        for (let i = 0; i < msg_arr.length; i++) {
+            const ltm = letraToMatriz(msg_arr[i])
+            for (let l = 0; l < ltm.length; l++) {
+                filasMatriz.push(filaMatrizArrBin(ltm[l]));
+            }
+
+        }
+
+        return filasMatriz;
+    }
+    function refrescaTodasFilas(fm) {
+        for (m = 0; m < 5; m++) {
+            for (c = 0; c < 8; c++) {
+                muestraFilaMatriz(m, c, fm[8 * m + c])
+            }
+
+        }
+
+    }
+    let msg = "hola?";
+    let filasMatriz = generaFilas(msg);
+   
+    matriz_ix = 0;
+    col_ix = 0;
+
+    function play() {
+        refrescaTodasFilas(filasMatriz);
+        const l = filasMatriz.shift();
+        filasMatriz.push(l);
+        console.log(filasMatriz.length)
+        
+
+        setTimeout(() => {
+            play();
+        }, 60);
+    }
+    play()
+</script>
+
+</html>

@@ -8,13 +8,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="datos-sitio.js"></script>
     <script src="glcdfont.js"></script>
+    <script src="traduccion.js"></script>
     <style>
         .pixel {
-            width: 15px;
-            height: 15px;
+            width: 4px;
+            height: 4px;
             background-color: black;
             border: 1px solid rgb(71, 0, 0);
-            border-radius: 5px;
+            border-radius: 1px;
 
         }
 
@@ -29,12 +30,39 @@
             box-shadow: 0px 0px 10px 1px rgb(237, 129, 129);
             z-index: 10;
         }
+
+        #Fila8x8{
+            position: absolute;
+            top: 150px;
+            left: calc(50vw - 380px);
+        }
+        #consola {
+            height:300px;
+            width:310px;
+            position: absolute;
+            top: 500px;
+            left: 400px;
+            border: 1px solid gray;
+            overflow-y: scroll;
+
+        }
+        #traduccionaire {
+            height:300px;
+            width:310px;
+            position: absolute;
+            top: 500px;
+            left: 0px;
+            border: 1px solid gray;
+            overflow-y: scroll;
+
+        }
     </style>
 </head>
 
 <body>
 
     <div id="consola"></div>
+    <div id="traduccionaire"></div>
     <div id="Fila8x8"></div>
 
     <!-- <div class="matriz">
@@ -64,8 +92,7 @@
 
 </body>
 <script>
-
-
+const cantidadMatrices = 15;
     function agregaLineaConsola(linea) {
         const html = `<div>${linea}</div>`;
         $('#consola').prepend(html);
@@ -82,12 +109,20 @@
         html += `</div>`;
         $('#Fila8x8').append(html);
     }
+    function agregaLineaTraduccionAire(linea) {
+        const html = `<div>${linea}</div>`;
+        $('#traduccionaire').prepend(html);
+    }
+
+
+
+
     function creaLineaMatrix() {
-        for (let i = 0; i < 5; i++) {
-            crea8x8(4 - i);
+        for (let i = 0; i < cantidadMatrices; i++) {
+            crea8x8(cantidadMatrices - 1 - i);
         }
     }
-    let c = 0;
+
 
     creaLineaMatrix();
 
@@ -142,32 +177,147 @@
         return filasMatriz;
     }
     function refrescaTodasFilas(fm) {
-        for (m = 0; m < 5; m++) {
-            for (c = 0; c < 8; c++) {
+        for (let m = 0; m < cantidadMatrices; m++) {
+            for (let c = 0; c < 8; c++) {
                 muestraFilaMatriz(m, c, fm[8 * m + c])
             }
 
         }
 
     }
-    let msg = "hola?";
+
+
+    function traduceLineaConsola(linea){
+        const datos = linea.split(',');
+        let d = {};
+        d.fecha=datos[0];
+        d.contador=datos[1];
+        d.arduino=datos[2];
+        d.sensor1=parseInt(datos[3]);
+        d.sensor2=parseInt(datos[4]);
+        d.sensor3=parseInt(datos[5]);
+        d.sensor4=parseInt(datos[6]);
+        return d;
+    }
+    let msg = " inicializando... ";
+    
+
     let filasMatriz = generaFilas(msg);
-   
-    matriz_ix = 0;
-    col_ix = 0;
 
+
+    let matriz_v = 0;
+    let matriz_c = 0;
+    let matriz_c2 = 0;
+
+    let consola_v = 25;
+    let consola_c = 0;
+    let consola_c2 = 0;
+
+    let primeraLectura = true;
     function play() {
-        refrescaTodasFilas(filasMatriz);
-        const l = filasMatriz.shift();
-        filasMatriz.push(l);
-        console.log(filasMatriz.length)
-        
 
-        setTimeout(() => {
-            play();
-        }, 60);
+
+
+        if (consola_c==consola_v){
+            
+            const linea = datos_sitio_txt[consola_c2];
+            
+            agregaLineaConsola(linea);
+            const datos = traduceLineaConsola(linea);
+            
+            const papa_txt = papa[rangoMedicionPapa(datos.sensor1)]
+           
+            const fer_txt = fer[rangoMedicionFer(datos.sensor2)];
+
+            const aire_txt = aire[rangoMedicionAire(datos.sensor4)];
+            
+            const mensaje = ` ${aire_txt} ${fer_txt} ${papa_txt} `;
+            if (primeraLectura){
+                msg = mensaje;
+                filasMatriz = generaFilas(msg);
+                primeraLectura = false;
+            }
+            agregaLineaTraduccionAire(mensaje);
+
+            if(ContadorLectura ==20 ) {
+                msg = mensaje;
+                filasMatriz = generaFilas(msg);
+                ContadorLectura=0;
+            }else{
+                ContadorLectura++;
+            };
+            
+           
+            
+            consola_c2++;
+            if(consola_c2 == 181){
+                consola_c2 = 0;
+            }
+            consola_c=0;
+        }else{
+            consola_c++;
+        }
+
+        if (matriz_c==matriz_v){
+            refrescaMatrices();
+            matriz_c=0;
+        }else{
+            matriz_c++;
+        }
+     
+      
+
+        // setTimeout(() => {
+        //     play();
+        // }, 5);
+        window.requestAnimationFrame(play);
+    }
+    function refrescaMatrices(){
+        refrescaTodasFilas(filasMatriz);
+        filasMatriz.push(filasMatriz.shift());
+ 
     }
     play()
+
+    let c_ciclo = 0;
+    // do {
+    //     c_ciclo++;
+    //     if (c_ciclo >= 100){
+    //         play();
+    //         requestAnimationFrame();
+    //         c_ciclo=0;
+    //     }
+    // } while (true);
+
+
+//     let start, previousTimeStamp;
+// let done = false;
+
+// function step(timeStamp) {
+//   if (start === undefined) {
+//     start = timeStamp;
+//   }
+//   const elapsed = timeStamp - start;
+
+//   if (previousTimeStamp !== timeStamp) {
+//     // Math.min() is used here to make sure the element stops at exactly 200px
+//     const count = Math.min(0.1 * elapsed, 200);
+//     refrescaMatrices()
+//    // if (count === 200) done = true;
+//   }
+
+//   //if (elapsed < 2000) {
+//     // Stop the animation after 2 seconds
+//     previousTimeStamp = timeStamp;
+//     if (!done) {
+//       window.requestAnimationFrame(step);
+      
+//     }
+//   //}
+// }
+
+// window.requestAnimationFrame(step);
+
 </script>
 
 </html>
